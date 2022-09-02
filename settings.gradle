@@ -1,3 +1,5 @@
-include ':products'
+include ':productsApplication'
+include ':productsUi'
+include ':productsData'
 include ':app'
 rootProject.name = "productsapp"
