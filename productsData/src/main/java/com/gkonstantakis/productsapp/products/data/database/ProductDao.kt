@@ -10,11 +10,11 @@ import com.gkonstantakis.productsapp.products.data.database.entities.DatabasePro
 interface ProductDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertProduct(heroEntity: DatabaseProduct): Long
+    suspend fun insertProduct(databaseProduct: DatabaseProduct): Long
 
     @Query("SELECT * FROM PRODUCTS")
     suspend fun getProducts(): List<DatabaseProduct>
 
     @Query("DELETE FROM PRODUCTS")
-    suspend fun deleteHeroes();
+    suspend fun deleteProducts();
 }

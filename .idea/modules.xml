@@ -3,10 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/productsapp.iml" filepath="$PROJECT_DIR$/.idea/modules/productsapp.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/productsapp.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/productsapp.app.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/productsApplication/productsapp.productsApplication.iml" filepath="$PROJECT_DIR$/.idea/modules/productsApplication/productsapp.productsApplication.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/productsData/productsapp.productsData.iml" filepath="$PROJECT_DIR$/.idea/modules/productsData/productsapp.productsData.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/productsUi/productsapp.productsUi.iml" filepath="$PROJECT_DIR$/.idea/modules/productsUi/productsapp.productsUi.iml" />
     </modules>
   </component>
 </project>

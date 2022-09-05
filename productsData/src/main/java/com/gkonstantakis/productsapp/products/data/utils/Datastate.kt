@@ -6,7 +6,7 @@ sealed class Datastate<out R> {
 
     data class SuccessDatabaseGet<out T>(val data: T) : Datastate<T>()
 
-    data class Error(val exception: Exception) : Datastate<Nothing>()
+    data class Error(val message: String) : Datastate<Nothing>()
 
     object Loading : Datastate<Nothing>()
 }

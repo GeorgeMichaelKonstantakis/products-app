@@ -1,5 +1,6 @@
 package com.gkonstantakis.productsapp.products.data.repositories.impl
 
+import android.util.Log
 import com.gkonstantakis.productsapp.products.data.database.ProductDao
 import com.gkonstantakis.productsapp.products.data.mappers.DatabaseMapper
 import com.gkonstantakis.productsapp.products.data.mappers.NetworkMapper
@@ -8,6 +9,7 @@ import com.gkonstantakis.productsapp.products.data.network.ProductNetworkService
 import com.gkonstantakis.productsapp.products.data.repositories.ProductRepository
 import com.gkonstantakis.productsapp.products.data.utils.Datastate
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 class ProductRepositoryImpl(
     private val productNetworkService: ProductNetworkService,
@@ -15,15 +17,53 @@ class ProductRepositoryImpl(
     private val databaseMapper: DatabaseMapper,
     private val networkMapper: NetworkMapper
 ) : ProductRepository {
-    override suspend fun getNetworkProducts(): Flow<Datastate<List<Product>>> {
-        TODO("Not yet implemented")
+
+    override suspend fun getNetworkProducts(): Flow<Datastate<List<Product>>> = flow {
+        emit(Datastate.Loading)
+        try {
+            val networkProducts = productNetworkService.get()
+            for(x in networkProducts) {
+                Log.e("NetworkProucts","product id: "+x.id)
+                Log.e("NetworkProucts","product description: "+x.description)
+            }
+            if (networkProducts.isNullOrEmpty()) {
+                emit(Datastate.Error("No products available."))
+            } else {
+                productDao.deleteProducts()
+                val products = networkMapper.mapFromEntitiesList(networkProducts)
+                val databaseProducts = databaseMapper.mapToEntitiesList(products)
+                databaseProducts.forEach {
+                    productDao.insertProduct(it)
+                }
+                emit(Datastate.SuccessNetworkGet(products.sortedBy { it.id }))
+            }
+        } catch (e: Exception) {
+            Log.e("ProductRepository", "getNetworkProducts: $e")
+            emit(Datastate.Error("Error fetching the products from network."))
+        }
     }
 
-    override suspend fun getDatabaseProducts(): Flow<Datastate<List<Product>>> {
-        TODO("Not yet implemented")
+    override suspend fun getDatabaseProducts(): Flow<Datastate<List<Product>>> = flow {
+        emit(Datastate.Loading)
+        try {
+            val databaseProducts = productDao.getProducts()
+            if (databaseProducts.isNullOrEmpty()) {
+                emit(Datastate.Error("DATABASE_ERROR"))
+            } else {
+                val products = databaseMapper.mapFromEntitiesList(databaseProducts)
+                emit(Datastate.SuccessDatabaseGet(products.sortedBy { it.id }))
+            }
+        } catch (e: Exception) {
+            Log.e("ProductRepository", "getDatabaseProducts: $e")
+            emit(Datastate.Error("DATABASE_ERROR"))
+        }
     }
 
     override suspend fun deleteProducts() {
-        TODO("Not yet implemented")
+        try {
+            productDao.deleteProducts()
+        } catch (e: Exception) {
+            Log.e("ProductRepository", "deleteProducts: $e")
+        }
     }
 }

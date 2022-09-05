@@ -31,10 +31,4 @@ class NetworkMapper {
             mapFromEntity(it)
         }
     }
-
-    fun mapToEntitiesList(entities: List<Product>): List<NetworkProduct> {
-        return entities.map {
-            mapToEntity(it)
-        }
-    }
 }

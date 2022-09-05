@@ -23,6 +23,6 @@ data class DatabaseProduct(
     var image: String,
 
     @ColumnInfo(name = "description")
-    var description: String
+    var description: String?
 ) {
 }

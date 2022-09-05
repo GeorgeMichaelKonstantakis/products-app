@@ -26,5 +26,5 @@ data class NetworkProduct(
 
     @SerializedName("Description")
     @Expose
-    var description: String
+    var description: String?
 )
