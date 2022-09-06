@@ -25,5 +25,8 @@ class ProductViewModelTest {
         runBlocking {
             productViewModel.setStateEvent(StateEvent.GetNetworkProducts)
         }
+        runBlocking {
+            productViewModel.setStateEvent(StateEvent.GetDatabaseProducts)
+        }
     }
 }

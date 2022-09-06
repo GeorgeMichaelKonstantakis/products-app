@@ -1,6 +1,5 @@
 package com.gkonstantakis.productsapp.products.activities
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.navigation.fragment.NavHostFragment
 import com.gkonstantakis.productsapp.products.R
