@@ -1,20 +1,20 @@
-package com.gkonstantakis.productsapp.products.viewmodels
+package com.gkonstantakis.productsapp.products.ui.viewmodels
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.gkonstantakis.productsapp.products.data.models.Product
-import com.gkonstantakis.productsapp.products.data.repositories.ProductRepository
 import com.gkonstantakis.productsapp.products.data.utils.Datastate
-import com.gkonstantakis.productsapp.products.mappers.UiMapper
+import com.gkonstantakis.productsapp.products.ui.repositories.FakeProductRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
-class ProductsViewModel(
-    private val productRepository: ProductRepository
-) : ViewModel() {
+class FakeProductViewModel(
+    private val productRepository: FakeProductRepository
+) {
+    private val scope = CoroutineScope(Dispatchers.Default)
 
     private val _dataState: MutableLiveData<Datastate<List<Product>>> =
         MutableLiveData()
@@ -23,17 +23,17 @@ class ProductsViewModel(
         get() = _dataState
 
     fun setStateEvent(stateEvent: StateEvent) {
-        viewModelScope.launch {
+        scope.launch {
             when (stateEvent) {
                 is StateEvent.GetNetworkProducts -> {
                     productRepository.getNetworkProducts().onEach { dataState ->
                         _dataState.value = dataState
-                    }.launchIn(viewModelScope)
+                    }.launchIn(scope)
                 }
                 is StateEvent.GetDatabaseProducts -> {
                     productRepository.getDatabaseProducts().onEach { dataState ->
                         _dataState.value = dataState
-                    }.launchIn(viewModelScope)
+                    }.launchIn(scope)
                 }
             }
         }

@@ -75,7 +75,7 @@ class ProductsFragment : Fragment() {
 
         productsApplication = (this.requireActivity().application as ProductsApplication)
 
-        viewModel = ProductsViewModel(productsApplication.productRepository, UiMapper())
+        viewModel = ProductsViewModel(productsApplication.productRepository)
 
         reloadButton = fragmentProductsBinding.reloadButton
         progressBar = fragmentProductsBinding.progressBar
