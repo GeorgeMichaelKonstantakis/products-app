@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -47,6 +48,7 @@ class ProductsFragment : Fragment() {
     private lateinit var reloadButton: ImageButton
     private lateinit var progressBar: ProgressBar
     private lateinit var productsListRecyclerView: RecyclerView
+    private lateinit var networkErrorText: TextView
 
     private var productItems: MutableList<UiProduct> = ArrayList<UiProduct>()
     private var productItemsAdapter: ProductsListAdapter? = null
@@ -78,6 +80,7 @@ class ProductsFragment : Fragment() {
         reloadButton = fragmentProductsBinding.reloadButton
         progressBar = fragmentProductsBinding.progressBar
         productsListRecyclerView = fragmentProductsBinding.productsList
+        networkErrorText = fragmentProductsBinding.networkErrorText
 
         subscribeObservers()
 
@@ -93,6 +96,7 @@ class ProductsFragment : Fragment() {
             when (datastate) {
                 is Datastate.SuccessNetworkGet<List<Product>> -> {
                     dataLoading(false)
+                    networkErrorText.visibility = View.GONE
                     if (datastate.data.isNullOrEmpty()) {
                         productItems.clear()
                         //DisplayErrorMessage
@@ -107,9 +111,7 @@ class ProductsFragment : Fragment() {
                             for (data in datastate.data) {
                                 productItems.add(UiMapper().mapToEntity(data))
                             }
-                          // Handler(Looper.getMainLooper()).postDelayed({
-                                updateProductItems(productItems)
-                        //    },5000)
+                            updateProductItems(productItems)
                         }
                     }
                 }
@@ -135,9 +137,10 @@ class ProductsFragment : Fragment() {
                     }
                 }
                 is Datastate.Error -> {
-                    Log.e("Datastate.Error", "MEeesage: " + datastate.message)
-                    if(datastate.message == "DATABASE_ERROR") {
+                    if (datastate.message == "DATABASE_ERROR") {
                         viewModel.setStateEvent(StateEvent.GetNetworkProducts)
+                    } else if(datastate.message == "NETWORK_ERROR") {
+                        networkErrorText.visibility = View.VISIBLE
                     }
                     dataLoading(false)
                 }
@@ -152,7 +155,7 @@ class ProductsFragment : Fragment() {
         })
     }
 
-    fun displayProductsList() {
+    private fun displayProductsList() {
         if (!productItems.isNullOrEmpty()) {
             productsListRecyclerView.adapter = ProductsListAdapter(
                 productItems,
@@ -167,7 +170,7 @@ class ProductsFragment : Fragment() {
         }
     }
 
-    fun deleteProductItems() {
+    private fun deleteProductItems() {
         productItemsAdapter?.deleteProductItems()
     }
 
@@ -175,7 +178,7 @@ class ProductsFragment : Fragment() {
         productItemsAdapter?.updateProductItems(newProductItems)
     }
 
-    fun dataLoading(isDataLoading: Boolean) {
+    private fun dataLoading(isDataLoading: Boolean) {
         if (isDataLoading) {
             progressBar.visibility = View.VISIBLE
         } else {

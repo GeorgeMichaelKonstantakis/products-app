@@ -22,10 +22,6 @@ class ProductRepositoryImpl(
         emit(Datastate.Loading)
         try {
             val networkProducts = productNetworkService.get()
-            for(x in networkProducts) {
-                Log.e("NetworkProucts","product id: "+x.id)
-                Log.e("NetworkProucts","product description: "+x.description)
-            }
             if (networkProducts.isNullOrEmpty()) {
                 emit(Datastate.Error("No products available."))
             } else {
@@ -39,7 +35,7 @@ class ProductRepositoryImpl(
             }
         } catch (e: Exception) {
             Log.e("ProductRepository", "getNetworkProducts: $e")
-            emit(Datastate.Error("Error fetching the products from network."))
+            emit(Datastate.Error("NETWORK_ERROR"))
         }
     }
 

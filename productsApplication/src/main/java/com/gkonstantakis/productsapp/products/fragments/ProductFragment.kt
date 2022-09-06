@@ -84,7 +84,7 @@ class ProductFragment : Fragment() {
         }
     }
 
-    fun navigateToProductsScreen() {
+    private fun navigateToProductsScreen() {
         val bundle = Bundle()
         Navigation.findNavController(this.requireActivity(), R.id.nav_host_fragment)
             .navigate(R.id.action_productFragment_to_productsFragment, bundle)
